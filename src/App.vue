@@ -1,10 +1,18 @@
 <script setup lang="ts">
-import { defineComponent, ref, computed } from "vue";
+import { ref } from "vue";
+import { BOARD_SIZE, PLAYER_BLACK, PLAYER_WHITE } from "./constants/OthelloConstants";
 
+const DIRECTIONS = [
+  { x: 0, y: 1 },
+  { x: 1, y: 1 },
+  { x: 1, y: 0 },
+  { x: 1, y: -1 },
+  { x: 0, y: -1 },
+  { x: -1, y: -1 },
+  { x: -1, y: 0 },
+  { x: -1, y: 1 },
+];
 
-const BOARD_SIZE = 8;
-const PLAYER_BLACK = "B";
-const PLAYER_WHITE = "W";
 const board = ref<string[][]>([]);
 const currentPlayer = ref<string>("B");
 const blackCount = ref<number>(0);
@@ -45,17 +53,8 @@ const isValidMove = (row: number, col: number) => {
   if (board.value[row][col] !== "") {
     return false;
   }
-  const directions = [
-    { x: 0, y: 1 },
-    { x: 1, y: 1 },
-    { x: 1, y: 0 },
-    { x: 1, y: -1 },
-    { x: 0, y: -1 },
-    { x: -1, y: -1 },
-    { x: -1, y: 0 },
-    { x: -1, y: 1 },
-  ];
-  for (const direction of directions) {
+
+  for (const direction of DIRECTIONS) {
     let x = col + direction.x;
     let y = row + direction.y;
     let count = 0;
@@ -89,17 +88,8 @@ const makeMove = (row: number, col: number) => {
       currentPlayer.value === PLAYER_BLACK ? PLAYER_WHITE : PLAYER_BLACK;
     return;
   }
-  const directions = [
-    { x: 0, y: 1 },
-    { x: 1, y: 1 },
-    { x: 1, y: 0 },
-    { x: 1, y: -1 },
-    { x: 0, y: -1 },
-    { x: -1, y: -1 },
-    { x: -1, y: 0 },
-    { x: -1, y: 1 },
-  ];
-  for (const direction of directions) {
+
+  for (const direction of DIRECTIONS) {
     let x = col + direction.x;
     let y = row + direction.y;
     let count = 0;
