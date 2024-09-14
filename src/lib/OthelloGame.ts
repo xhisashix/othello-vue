@@ -40,7 +40,7 @@ export default class OthelloGame {
   /**
    * Initializes the Othello game board and sets the initial state.
    */
-  public initGame() {
+  private initGame() {
     this.board.splice(
       0,
       this.board.length,
