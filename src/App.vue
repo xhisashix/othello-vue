@@ -1,22 +1,3 @@
-<script setup lang="ts">
-import { onMounted, ref } from "vue";
-import OthelloGame from "./lib/OthelloGame";
-
-const board = ref<string[][]>([]);
-const currentPlayer = ref<string>("B");
-const blackCount = ref<number>(0);
-const whiteCount = ref<number>(0);
-const othelloGame = new OthelloGame();
-
-onMounted(() => {
-  board.value = othelloGame.board;
-  currentPlayer.value = othelloGame.currentPlayer;
-  blackCount.value = othelloGame.blackCount;
-  whiteCount.value = othelloGame.whiteCount;
-});
-
-</script>
-
 <template>
   <div class="container mx-auto py-4">
     <main class="container mt-3">
@@ -66,5 +47,35 @@ onMounted(() => {
     </main>
   </div>
 </template>
+
+<script lang="ts">
+import { onMounted, ref } from "vue";
+import OthelloGame from "./lib/OthelloGame";
+
+export default {
+  setup() {
+    const board = ref<string[][]>([]);
+    const currentPlayer = ref<string>("B");
+    const blackCount = ref<number>(0);
+    const whiteCount = ref<number>(0);
+    const othelloGame = new OthelloGame();
+
+    onMounted(() => {
+      board.value = othelloGame.board;
+      currentPlayer.value = othelloGame.currentPlayer;
+      blackCount.value = othelloGame.blackCount;
+      whiteCount.value = othelloGame.whiteCount;
+    });
+
+    return {
+      board,
+      currentPlayer,
+      blackCount,
+      whiteCount,
+      othelloGame,
+    };
+  },
+};
+</script>
 
 <style scoped></style>

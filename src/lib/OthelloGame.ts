@@ -3,7 +3,7 @@ import {
   PLAYER_BLACK,
   PLAYER_WHITE,
 } from "../constants/OthelloConstants";
-import { EventEmitter } from "events";
+import { reactive } from "vue";
 
 const DIRECTIONS = [
   { row: -1, col: -1 },
@@ -26,7 +26,11 @@ export default class OthelloGame {
   public whiteCount: number;
 
   constructor() {
-    this.board = [];
+    this.board = reactive(
+      Array.from({ length: BOARD_SIZE }, () =>
+        Array.from({ length: BOARD_SIZE }, () => "")
+      )
+    );
     this.currentPlayer = PLAYER_BLACK;
     this.blackCount = 0;
     this.whiteCount = 0;
@@ -37,8 +41,12 @@ export default class OthelloGame {
    * Initializes the Othello game board and sets the initial state.
    */
   public initGame() {
-    this.board = Array.from({ length: BOARD_SIZE }, () =>
-      Array.from({ length: BOARD_SIZE }, () => "")
+    this.board.splice(
+      0,
+      this.board.length,
+      ...Array.from({ length: BOARD_SIZE }, () =>
+        Array.from({ length: BOARD_SIZE }, () => "")
+      )
     );
     const mid = BOARD_SIZE / 2;
     this.board[mid - 1][mid - 1] = PLAYER_WHITE;
@@ -47,13 +55,12 @@ export default class OthelloGame {
     this.board[mid][mid] = PLAYER_WHITE;
     this.blackCount = 2;
     this.whiteCount = 2;
-    console.log("Game initialized.");
   }
 
   /**
    * Event that is triggered when the Othello game board is updated.
    */
-  public boardUpdated = new Event('boardUpdated');
+  public boardUpdated = new Event("boardUpdated");
 
   /**
    * Resets the Othello game to its initial state.
@@ -112,9 +119,7 @@ export default class OthelloGame {
    * @param col - The column index.
    */
   public makeMove(row: number, col: number) {
-    console.log("Making move at", row, col);
     if (!this.isValidMove(row, col)) {
-      console.log("Invalid move at", row, col);
       return;
     }
 
@@ -150,8 +155,5 @@ export default class OthelloGame {
     this.whiteCount = this.board
       .flat()
       .filter((cell) => cell === PLAYER_WHITE).length;
-    console.log("Board state:", this.board);
-    console.log("Current player:", this.currentPlayer);
-    console.log("Black count:", this.blackCount, "White count:", this.whiteCount);
   }
 }
