@@ -79,16 +79,15 @@ export default class OthelloGame {
   }
 
   /**
-   * Checks if a move is valid at the specified row and column.
+   * Flips the stones in a given direction if the move is valid.
    *
    * @param row - The row index.
    * @param col - The column index.
-   * @returns A boolean indicating if the move is valid.
+   * @param flip - Whether to flip the stones or just check validity.
+   * @returns A boolean indicating if the move is valid in the given direction.
    */
-  public isValidMove(row: number, col: number): boolean {
-    if (this.board[row][col] !== "") {
-      return false;
-    }
+  private flipStones(row: number, col: number, flip: boolean): boolean {
+    let valid = false;
 
     for (const direction of DIRECTIONS) {
       let x = col + direction.row;
@@ -100,7 +99,15 @@ export default class OthelloGame {
         }
         if (this.board[y][x] === this.currentPlayer) {
           if (count > 0) {
-            return true;
+            valid = true;
+            if (flip) {
+              while (count > 0) {
+                x -= direction.row;
+                y -= direction.col;
+                this.board[y][x] = this.currentPlayer;
+                count--;
+              }
+            }
           }
           break;
         }
@@ -109,7 +116,22 @@ export default class OthelloGame {
         count++;
       }
     }
-    return false;
+
+    return valid;
+  }
+
+  /**
+   * Checks if a move is valid at the specified row and column.
+   *
+   * @param row - The row index.
+   * @param col - The column index.
+   * @returns A boolean indicating if the move is valid.
+   */
+  public isValidMove(row: number, col: number): boolean {
+    if (this.board[row][col] !== "") {
+      return false;
+    }
+    return this.flipStones(row, col, false);
   }
 
   /**
@@ -123,29 +145,7 @@ export default class OthelloGame {
       return;
     }
 
-    for (const direction of DIRECTIONS) {
-      let x = col + direction.row;
-      let y = row + direction.col;
-      let count = 0;
-      while (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE) {
-        if (this.board[y][x] === "") {
-          break;
-        }
-        if (this.board[y][x] === this.currentPlayer) {
-          while (count > 0) {
-            x -= direction.row;
-            y -= direction.col;
-            this.board[y][x] = this.currentPlayer;
-            count--;
-          }
-          break;
-        }
-        x += direction.row;
-        y += direction.col;
-        count++;
-      }
-    }
-
+    this.flipStones(row, col, true);
     this.board[row][col] = this.currentPlayer;
     this.currentPlayer =
       this.currentPlayer === PLAYER_BLACK ? PLAYER_WHITE : PLAYER_BLACK;
